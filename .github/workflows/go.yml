@@ -12,14 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.18', '1.19', '1.20' ]
+        go: [ '1.21', '1.22', '1.23' ]
     name: Go ${{ matrix.go }} tests
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go }}
+        
     - name: Install dependencies
       run: |
         go get -t -d -v ./...
@@ -30,6 +31,15 @@ jobs:
         go install github.com/modocache/gover
         go get -u github.com/mattn/goveralls
         go install github.com/mattn/goveralls
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        working-directory: go/src/rn
+        args: --timeout=20m -v
+        skip-cache: false
+
+
     - name: Run tests
       run: |
         ginkgo -r -cover --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --progress
@@ -40,4 +50,3 @@ jobs:
         bash scripts/fmtpolice
         gover
         goveralls -coverprofile=gover.coverprofile -repotoken gY90SprlNRGmSMl7MgybLreYa05wUXJTU
-  
