@@ -135,12 +135,14 @@ func (p *Post) AddToManyIDs(name string, IDs []string) error {
 		for _, ID := range IDs {
 			p.Comments = append(p.Comments, Comment{ID: ID})
 		}
+		return nil
 	}
 
 	if name == "bananas" {
 		for _, ID := range IDs {
 			p.Bananas = append(p.Bananas, Banana{ID: ID})
 		}
+		return nil
 	}
 
 	return errors.New("There is no to-manyrelationship with the name " + name)
@@ -156,6 +158,7 @@ func (p *Post) DeleteToManyIDs(name string, IDs []string) error {
 				}
 			}
 		}
+		return nil
 	}
 
 	if name == "bananas" {
@@ -167,6 +170,7 @@ func (p *Post) DeleteToManyIDs(name string, IDs []string) error {
 				}
 			}
 		}
+		return nil
 	}
 	return errors.New("There is no to-manyrelationship with the name " + name)
 }
