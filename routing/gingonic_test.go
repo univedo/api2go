@@ -1,10 +1,9 @@
 //go:build gingonic && !gorillamux && !echo
-// +build gingonic,!gorillamux,!echo
 
 package routing_test
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -65,7 +64,7 @@ var _ = Describe("api2go with gingonic router adapter", func() {
 	})
 
 	BeforeEach(func() {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 		rec = httptest.NewRecorder()
 	})
 

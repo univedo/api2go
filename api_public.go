@@ -2,7 +2,6 @@ package api2go
 
 import (
 	"net/http"
-	"strings"
 	"sync"
 
 	"github.com/manyminds/api2go/jsonapi"
@@ -24,12 +23,12 @@ type API struct {
 }
 
 // Handler returns the http.Handler instance for the API.
-func (api API) Handler() http.Handler {
+func (api *API) Handler() http.Handler {
 	return api.router.Handler()
 }
 
 // Router returns the specified router on an api instance
-func (api API) Router() routing.Routeable {
+func (api *API) Router() routing.Routeable {
 	return api.router
 }
 
@@ -105,14 +104,6 @@ func NewAPIWithRouting(prefix string, resolver URLResolver, router routing.Route
 
 // newAPI is now an internal method that can be changed if params are changing
 func newAPI(prefix string, resolver URLResolver, router routing.Routeable) *API {
-	// Add initial and trailing slash to prefix
-	prefixSlashes := strings.Trim(prefix, "/")
-	if len(prefixSlashes) > 0 {
-		prefixSlashes = "/" + prefixSlashes + "/"
-	} else {
-		prefixSlashes = "/"
-	}
-
 	info := information{prefix: prefix, resolver: resolver}
 
 	api := &API{

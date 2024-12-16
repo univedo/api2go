@@ -92,7 +92,8 @@ var _ = Describe("Custom enum types", func() {
 	Context("When unmarshaling objects including enums", func() {
 		It("unmarshals status string values to int enum type", func() {
 			var result PublishStatus
-			result.UnmarshalText([]byte(statusValue))
+			err := result.UnmarshalText([]byte(statusValue))
+			Expect(err).ToNot(HaveOccurred())
 			Expect(result).To(Equal(status))
 		})
 

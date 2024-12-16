@@ -1,10 +1,9 @@
 //go:build echo && !gingonic && !gorillamux
-// +build echo,!gingonic,!gorillamux
 
 package routing_test
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -45,7 +44,7 @@ var _ = Describe("api2go with echo router adapter", func() {
 	})
 
 	BeforeEach(func() {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 		rec = httptest.NewRecorder()
 	})
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -923,7 +923,10 @@ func (res *resource) handleAddToManyRelation(c APIContexter, w http.ResponseWrit
 	if !ok {
 		return errors.New("target struct must implement jsonapi.EditToManyRelations")
 	}
-	targetObj.AddToManyIDs(relation.Name, newIDs)
+	err = targetObj.AddToManyIDs(relation.Name, newIDs)
+	if err != nil {
+		return err
+	}
 
 	if resType == reflect.Struct {
 		_, err = source.Update(reflect.ValueOf(targetObj).Elem().Interface(), buildRequest(c, r))
@@ -1002,7 +1005,10 @@ func (res *resource) handleDeleteToManyRelation(c APIContexter, w http.ResponseW
 	if !ok {
 		return errors.New("target struct must implement jsonapi.EditToManyRelations")
 	}
-	targetObj.DeleteToManyIDs(relation.Name, obsoleteIDs)
+	err = targetObj.DeleteToManyIDs(relation.Name, obsoleteIDs)
+	if err != nil {
+		return err
+	}
 
 	if resType == reflect.Struct {
 		_, err = source.Update(reflect.ValueOf(targetObj).Elem().Interface(), buildRequest(c, r))
@@ -1057,7 +1063,7 @@ func (res *resource) handleDelete(c APIContexter, w http.ResponseWriter, r *http
 func writeResult(w http.ResponseWriter, data []byte, status int, contentType string) {
 	w.Header().Set("Content-Type", contentType)
 	w.WriteHeader(status)
-	w.Write(data)
+	_, _ = w.Write(data)
 }
 
 func (res *resource) respondWith(obj Responder, info information, status int, w http.ResponseWriter, r *http.Request) error {
@@ -1100,7 +1106,7 @@ func (res *resource) respondWithPagination(obj Responder, info information, stat
 
 func unmarshalRequest(r *http.Request) ([]byte, error) {
 	defer r.Body.Close()
-	data, err := ioutil.ReadAll(r.Body)
+	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}

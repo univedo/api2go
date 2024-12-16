@@ -20,8 +20,7 @@ import (
 const testPrefix = "v1"
 
 type requestURLResolver struct {
-	r     http.Request
-	calls int
+	r http.Request
 }
 
 func (m requestURLResolver) GetBaseURL() string {
@@ -871,7 +870,7 @@ var _ = Describe("RestHandler", func() {
 			api.Handler().ServeHTTP(rec, req)
 			// It's up to the user how to implement this. Api2go just checks if the type is correct
 			Expect(rec.Code).To(Equal(http.StatusConflict))
-			Expect(string(rec.Body.Bytes())).To(MatchJSON(`{"errors":[{"status":"409","title":"id in the resource does not match servers endpoint"}]}`))
+			Expect(rec.Body.String()).To(MatchJSON(`{"errors":[{"status":"409","title":"id in the resource does not match servers endpoint"}]}`))
 		})
 
 		It("POST without type returns 406", func() {
@@ -880,7 +879,7 @@ var _ = Describe("RestHandler", func() {
 			Expect(err).To(BeNil())
 			api.Handler().ServeHTTP(rec, req)
 			Expect(rec.Code).To(Equal(http.StatusNotAcceptable))
-			Expect(string(rec.Body.Bytes())).To(MatchJSON(`{"errors":[{"status":"406","title":"invalid record, no type was specified"}]}`))
+			Expect(rec.Body.String()).To(MatchJSON(`{"errors":[{"status":"406","title":"invalid record, no type was specified"}]}`))
 
 		})
 
@@ -909,7 +908,7 @@ var _ = Describe("RestHandler", func() {
 				Expect(err).To(BeNil())
 				api.Handler().ServeHTTP(rec, req)
 				Expect(rec.Code).To(Equal(http.StatusConflict))
-				Expect(string(rec.Body.Bytes())).To(MatchJSON(`{"errors":[{"status":"409","title":"id in the resource does not match servers endpoint"}]}`))
+				Expect(rec.Body.String()).To(MatchJSON(`{"errors":[{"status":"409","title":"id in the resource does not match servers endpoint"}]}`))
 			})
 
 			It("UPDATEs correctly using null.* values", func() {
@@ -1080,7 +1079,7 @@ var _ = Describe("RestHandler", func() {
 			api.Handler().ServeHTTP(rec, req)
 			Expect(rec.Code).To(Equal(http.StatusBadRequest))
 			expected := `{"errors":[{"id":"SomeErrorID","source":{"pointer":"Title"}}]}`
-			actual := strings.TrimSpace(string(rec.Body.Bytes()))
+			actual := strings.TrimSpace(rec.Body.String())
 			Expect(actual).To(Equal(expected))
 		})
 	})
@@ -1434,7 +1433,6 @@ var _ = Describe("RestHandler", func() {
 
 		Context("test utility function getPointerToStruct", func() {
 			type someStruct struct {
-				someEntry string
 			}
 
 			It("Should work as expected", func() {
