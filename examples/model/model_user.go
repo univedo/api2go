@@ -98,6 +98,7 @@ func (u *User) DeleteToManyIDs(name string, IDs []string) error {
 				}
 			}
 		}
+		return nil
 	}
 
 	return errors.New("There is no to-many relationship with the name " + name)

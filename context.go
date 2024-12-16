@@ -72,7 +72,7 @@ var _ APIContexter = &APIContext{}
 // ContextQueryParams fetches the QueryParams if Set
 func ContextQueryParams(c *APIContext) map[string][]string {
 	qp, ok := c.Get("QueryParams")
-	if ok == false {
+	if !ok {
 		qp = make(map[string][]string)
 		c.Set("QueryParams", qp)
 	}
